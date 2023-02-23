@@ -6,11 +6,12 @@ import com.example.community.model.Post;
 import java.util.List;
 
 public interface PostService {
-    PostDto.CreatePost createPost(PostDto.CreatePost requestDTO, String authentication);
-    // void updatePost(PostDto postDto);
-    // void deletePost(Long postId);
-    // List<PostDto> getPostList();
-    // void likePost(Long postId, Long userId);
+    void createPost(PostDto.CreatePost requestDTO, String authentication);
+    void updatePost(PostDto.UpdatePost requestDTO, String authentication);
+    void deletePost(Long userId, Long postId, String authentication);
+    void likePost(Long userId, Long postId, String authentication);
+    List<Post> getPostList();
+
 
     // List<LikeHistoryDto> getLikeHistory(Long postId);
     // void addWriteHistory(PostDto postDto);

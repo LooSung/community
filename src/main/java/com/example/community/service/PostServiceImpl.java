@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,7 +21,7 @@ public class PostServiceImpl implements PostService {
 
     // 글 작성
     @Transactional
-    public PostDto.CreatePost createPost(PostDto.CreatePost requestDTO, String authentication) {
+    public void createPost(PostDto.CreatePost requestDTO, String authentication) {
         String[] authInfo = authentication.split(" ");
         String accountType = authInfo[0];
         Long memberId = Long.valueOf(authInfo[1]);
@@ -35,43 +36,27 @@ public class PostServiceImpl implements PostService {
                 .content(requestDTO.getContent())
                 .editor(memberInfo.get())
                 .build();
-
-        PostDto.CreatePost response = new PostDto.CreatePost();
-        response.setTitle(post.getTitle());
-        response.setContent(post.getContent());
-
-        return response;
-
+        postRepository.save(post);
     }
 
     // 글 수정
-    /*public void updatePost(Long postId, Post post, String authenticationHeader) {
-        Post post = findPostById(postId);
+    public void updatePost(PostDto.UpdatePost requestDTO, String authenticationHeader) {
+       /* Post post = findPostById(postId);
         User user = memberRepository.findByAccountIdAndAccountType(getAccountId(authenticationHeader), getAccountType(authenticationHeader));
         checkPostAuthor(post, user);
-        post.update(postDto.getTitle(), postDto.getContent());
+        post.update(postDto.getTitle(), postDto.getContent());*/
     }
 
-    private void checkPostAuthor(Post post, User user) {
-        if (!post.getUser().equals(user)) {
-            throw new UnauthorizedException("권한이 없는 유저입니다.");
-        }
-    }
-
-    private Post findPostById(Long postId) {
-        return postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("해당하는 게시글이 존재하지 않습니다."));
-    }
     // 글 삭제
-    public void deletePost(Long postId, String authenticationHeader) {
-        Post post = findPostById(postId);
+    public void deletePost(Long userId, Long postId, String authenticationHeader) {
+        /*Post post = findPostById(postId);
         User user = memberRepository.findByAccountIdAndAccountType(getAccountId(authenticationHeader), getAccountType(authenticationHeader));
         checkPostAuthor(post, user);
-        post.delete();
+        post.delete();*/
     }
 
-    public void likePost(Long postId, Long userId) {
-        Post post = postRepository.findById(postId)
+    public void likePost(Long userId, Long postId, String authenticationHeader) {
+        /*Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다. postId=" + postId));
 
         if (likeRepository.existsByPostAndUserId(post, userId)) {
@@ -82,10 +67,10 @@ public class PostServiceImpl implements PostService {
                 .post(post)
                 .member(userId)
                 .build();
-        likeRepository.save(like);
+        likeRepository.save(like);*/
     }
 
-    public List<Post> getPosts() {
+    public List<Post> getPostList() {
         return postRepository.findAll();
-    }*/
+    }
 }

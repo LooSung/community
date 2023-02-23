@@ -1,5 +1,5 @@
 server:
-    port: 8080
+    port: 8081
     application:
         name: community-api
     servlet:
@@ -8,8 +8,8 @@ server:
 spring:
     datasource:
         driverClassName: org.h2.Driver
-        url: jdbc:h2:mem:testdb
-        username: community
+        url: jdbc:h2:file:./database/community
+        username: sa
         password:
     h2:
         console:
@@ -17,7 +17,7 @@ spring:
             path: /h2-console
     jpa:
         hibernate:
-            ddl-auto: create-drop
+            ddl-auto: update
         properties:
             hibernate:
                 format_sql: true

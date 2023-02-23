@@ -5,6 +5,7 @@ import com.example.community.model.Post;
 
 import com.example.community.service.PostService;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,43 +22,34 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/createPost")
-    public ResponseEntity<PostDto.CreatePost> createPost(@RequestBody PostDto.CreatePost requestDTO,
-                                                                @RequestHeader HttpHeaders headers) {
-        String authentication = headers.getFirst("Authentication");
-        PostDto.CreatePost result = postService.createPost(requestDTO, authentication);
-
-        return ResponseEntity.ok(result);
+    public ResponseEntity createPost(@RequestBody PostDto.CreatePost requestDTO, @RequestHeader HttpHeaders headers) {
+        postService.createPost(requestDTO, headers.getFirst("Authentication"));
+        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
-    /*@PutMapping("/{post_id}")
-    public ResponseEntity<Post> updatePost(@PathVariable Long post_id, @RequestBody Post post) {
-        Post updatedPost = postService.updatePost(post_id, post);
-        if (updatedPost == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(updatedPost);
+    @PutMapping("/updatePost")
+    public ResponseEntity updatePost(@RequestBody PostDto.UpdatePost requestDTO, @RequestHeader HttpHeaders headers) {
+        postService.updatePost(requestDTO, headers.getFirst("Authentication"));
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{post_id}")
-    public ResponseEntity<Post> deletePost(@PathVariable Long post_id) {
-        if (postService.deletePost(post_id)) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+    @DeleteMapping("/deletePost/{post_id}")
+    public ResponseEntity deletePost(@PathVariable Long user_id, @PathVariable Long post_id,
+                                     @RequestHeader HttpHeaders headers) {
+        postService.deletePost(user_id, post_id, headers.getFirst("Authentication"));
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @PostMapping("/{post_id}/likes")
-    public ResponseEntity<Post> likePost(@PathVariable Long post_id) {
-        Post likedPost = postService.likePost(post_id);
-        if (likedPost == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(likedPost);
+    public ResponseEntity likePost(@PathVariable Long user_id, @PathVariable Long post_id,
+                                   @RequestHeader HttpHeaders headers) {
+        postService.likePost(user_id, post_id, headers.getFirst("Authentication"));
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<List<Post>> getPosts() {
-        List<Post> posts = postService.getPosts();
+        List<Post> posts = postService.getPostList();
         return ResponseEntity.ok(posts);
-    }*/
+    }
 }

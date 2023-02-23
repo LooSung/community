@@ -14,13 +14,10 @@ public class PostDto {
     }
 
     @Data
-    public static class ResponsePost {
-        private Long id;
+    public static class UpdatePost {
+        private Long userId;
+        private Long postId;
         private String title;
         private String content;
-        private String authorId;
-        private LocalDateTime createTime;
-        private LocalDateTime updateTime;
-        private LocalDateTime deleteTime;
     }
 }

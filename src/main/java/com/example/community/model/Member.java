@@ -16,6 +16,9 @@ public class Member {
 	@Column(name = "id", nullable = false)
 	private Long id;
 
+	@Column(name = "password")
+	private String password;
+
 	@Column(name = "nickname")
 	private String nickname;
 
@@ -30,11 +33,12 @@ public class Member {
 	private boolean quit;
 
 	@Builder
-	private Member(Long id, String nickname, PostEnum.AccountType accountType,
+	private Member(Long id, String password, String nickname, PostEnum.AccountType accountType,
 				   String accountId, boolean quit) {
 		Assert.hasText(String.valueOf(id), "User Id must not be empty");
 
 		this.id = id;
+		this.password = password;
 		this.nickname = nickname;
 		this.accountType = accountType;
 		this.accountId = accountId;
