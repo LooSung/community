@@ -148,7 +148,7 @@ public class PostServiceImpl implements PostService {
             throw new RuntimeException("해당 게시물이 존재하지 않습니다.");
         }
 
-        return postHistoryRepository.findAllByPostOOrderByCreatedAtDesc(postInfo.get());
+        return postHistoryRepository.findAllByPostOrderByCreatedAtDesc(postInfo.get());
     }
 
     public List<PostLike> getPostLikeList(Long userId) {

@@ -6,6 +6,9 @@ import com.example.community.model.Post;
 import com.example.community.model.PostHistory;
 import com.example.community.model.PostLike;
 import com.example.community.service.PostService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +23,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/post")
 public class PostController {
-
     private final PostService postService;
 
+    @ApiOperation(value = "Write Post", response = Post.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authentication", value = "Account ID", required = true, dataTypeClass = String.class, paramType = "header")
+    })
     @PostMapping("/createPost")
     public ResponseEntity createPost(@RequestBody PostDto.CreatePost requestDTO, @RequestHeader HttpHeaders headers) {
         postService.createPost(requestDTO, headers.getFirst("Authentication"));

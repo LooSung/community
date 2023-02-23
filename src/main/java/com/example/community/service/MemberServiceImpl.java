@@ -20,19 +20,23 @@ public class MemberServiceImpl implements MemberService {
     public void joinMember(MemberDto.RequestJoinMember requestDTO) {
         Optional<Member> memberInfo = memberRepository.findMemberByNickname(requestDTO.getNickname());
 
-        if(!memberInfo.isPresent()) {
+        if(memberInfo.isPresent()) {
             throw new RuntimeException("이미 등록 된 회원입니다.");
         }
 
-        if(requestDTO.getPassword1() != requestDTO.getPassword2()) {
+        if(!requestDTO.getPassword1().equals(requestDTO.getPassword2())) {
             throw new RuntimeException("입력 하신 Password가 서로 다릅니다.");
         }
+
+        Long lastId = memberRepository.findFirstByOrderByIdDesc().getId();
+        lastId++;
 
         Member member = Member.builder()
                 .password(requestDTO.getPassword1())
                 .nickname(requestDTO.getNickname())
                 .accountType(requestDTO.getAccountType())
-                .accountId(requestDTO.getAccountId())
+                .accountId(requestDTO.getAccountType() + " " + lastId)
+                .quit(false)
                 .build();
         memberRepository.save(member);
     }
