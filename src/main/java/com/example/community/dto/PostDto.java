@@ -15,7 +15,6 @@ public class PostDto {
 
     @Data
     public static class UpdatePost {
-        private Long userId;
         private Long postId;
         private String title;
         private String content;

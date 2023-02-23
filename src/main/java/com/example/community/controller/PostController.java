@@ -3,6 +3,8 @@ package com.example.community.controller;
 import com.example.community.dto.PostDto;
 import com.example.community.model.Post;
 
+import com.example.community.model.PostHistory;
+import com.example.community.model.PostLike;
 import com.example.community.service.PostService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,16 +42,28 @@ public class PostController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PostMapping("/{post_id}/likes")
+    @PostMapping("/likes/{post_id}")
     public ResponseEntity likePost(@PathVariable Long user_id, @PathVariable Long post_id,
                                    @RequestHeader HttpHeaders headers) {
         postService.likePost(user_id, post_id, headers.getFirst("Authentication"));
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/getPosts")
     public ResponseEntity<List<Post>> getPosts() {
         List<Post> posts = postService.getPostList();
         return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("/getPostHistory/{post_id}")
+    public ResponseEntity<List<PostHistory>> getPostHistory(@PathVariable Long post_id) {
+        List<PostHistory> postHistory = postService.getPostHistoryList(post_id);
+        return ResponseEntity.ok(postHistory);
+    }
+
+    @GetMapping("/getPostsLikes/{user_id}")
+    public ResponseEntity<List<PostLike>> getPostsLikes(@PathVariable Long user_id) {
+        List<PostLike> postLikes = postService.getPostLikeList(user_id);
+        return ResponseEntity.ok(postLikes);
     }
 }
