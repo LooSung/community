@@ -169,9 +169,7 @@ public class PostServiceImpl implements PostService {
             }
         } catch (Exception ex) {
             throw new RuntimeException("authentication에 해당하지 않습니다.");
-        } finally {
-            return null;
-        }
+        } finally {}
     }
 
     private Optional<Post> checkPost(Long postId) {
