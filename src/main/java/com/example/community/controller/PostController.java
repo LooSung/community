@@ -27,7 +27,8 @@ public class PostController {
 
     @ApiOperation(value = "Write Post", response = Post.class)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authentication", value = "Account ID", required = true, dataTypeClass = String.class, paramType = "header")
+            @ApiImplicitParam(name = "Authentication", value = "Account ID", required = true,
+                              dataTypeClass = String.class, paramType = "header", defaultValue = " ")
     })
     @PostMapping("/createPost")
     public ResponseEntity createPost(@RequestBody PostDto.CreatePost requestDTO, @RequestHeader HttpHeaders headers) {
@@ -36,7 +37,8 @@ public class PostController {
     }
     @ApiOperation(value = "Modify Post", response = Post.class)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authentication", value = "Account ID", required = true, dataTypeClass = String.class, paramType = "header")
+            @ApiImplicitParam(name = "Authentication", value = "Account ID", required = true,
+                              dataTypeClass = String.class, paramType = "header", defaultValue = " ")
     })
     @PutMapping("/updatePost")
     public ResponseEntity updatePost(@RequestBody PostDto.UpdatePost requestDTO, @RequestHeader HttpHeaders headers) {
@@ -46,7 +48,8 @@ public class PostController {
 
     @ApiOperation(value = "Withdraw Post", response = Post.class)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authentication", value = "Account ID", required = true, dataTypeClass = String.class, paramType = "header")
+            @ApiImplicitParam(name = "Authentication", value = "Account ID", required = true,
+                              dataTypeClass = String.class, paramType = "header", defaultValue = " ")
     })
     @DeleteMapping("/deletePost/{post_id}")
     public ResponseEntity deletePost(@PathVariable Long post_id, @RequestHeader HttpHeaders headers) {
@@ -56,7 +59,8 @@ public class PostController {
 
     @ApiOperation(value = "Like Post", response = Post.class)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authentication", value = "Account ID", required = true, dataTypeClass = String.class, paramType = "header")
+            @ApiImplicitParam(name = "Authentication", value = "Account ID", required = true,
+                              dataTypeClass = String.class, paramType = "header", defaultValue = " ")
     })
     @PostMapping("/likes/{post_id}")
     public ResponseEntity likePost(@PathVariable Long post_id, @RequestHeader HttpHeaders headers) {
@@ -66,7 +70,8 @@ public class PostController {
 
     @ApiOperation(value = "View Post List", response = Post.class)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authentication", value = "Account ID", required = true, dataTypeClass = String.class, paramType = "header")
+            @ApiImplicitParam(name = "Authentication", value = "Account ID", required = true,
+                              dataTypeClass = String.class, paramType = "header", defaultValue = " ")
     })
     @GetMapping("/getPosts")
     public ResponseEntity getPosts(@RequestHeader HttpHeaders headers) {

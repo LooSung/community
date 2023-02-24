@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.BlockingDeque;
 
 public class PostDto {
     @Data
@@ -22,10 +23,18 @@ public class PostDto {
 
     @Data
     public static class PostList {
-        private String memberName;
         private String title;
         private String content;
-        private String checkSelfLike;
-        private int likeCount;
+        private String user;
+        private boolean checkSelfLike;
+        private Number likeCount;
+
+        public PostList(String  title, String content, String user, boolean checkSelfLike, Number likeCount) {
+            this.title = title;
+            this.content = content;
+            this.user = user;
+            this.checkSelfLike = checkSelfLike;
+            this.likeCount = likeCount;
+        }
     }
 }

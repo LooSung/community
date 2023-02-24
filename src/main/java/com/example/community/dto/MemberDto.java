@@ -8,7 +8,6 @@ public class MemberDto {
     public static class RequestJoinMember {
         private String nickname;
         private String password1;
-        private String password2;
-        private Member.AccountType accountType;
+        private String accountType;
     }
 }

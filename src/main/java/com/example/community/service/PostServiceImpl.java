@@ -33,7 +33,7 @@ public class PostServiceImpl implements PostService {
     public void createPost(PostDto.CreatePost requestDTO, String authentication) {
         // Check Authentication
         Optional<Member> memberInfo = checkAuth(authentication);
-        if(!memberInfo.isPresent()) {
+        if (memberInfo == null) {
             throw new RuntimeException("회원에 등록 되지 않은 외부 사용자입니다.");
         } else {
             postDao.createPost(requestDTO, memberInfo);
@@ -44,7 +44,7 @@ public class PostServiceImpl implements PostService {
     public void updatePost(PostDto.UpdatePost requestDTO, String authentication) {
         // Check Authentication
         Optional<Member> memberInfo = checkAuth(authentication);
-        if(!memberInfo.isPresent()) {
+        if (memberInfo == null) {
             throw new RuntimeException("회원에 등록 되지 않은 외부 사용자입니다.");
         }
 
@@ -61,7 +61,7 @@ public class PostServiceImpl implements PostService {
     public void deletePost(Long postId, String authentication) {
         // Check Authentication
         Optional<Member> memberInfo = checkAuth(authentication);
-        if(!memberInfo.isPresent()) {
+        if (memberInfo == null) {
             throw new RuntimeException("회원에 등록 되지 않은 외부 사용자입니다.");
         }
 
@@ -77,7 +77,7 @@ public class PostServiceImpl implements PostService {
     public void likePost(Long postId, String authentication) {
         // Check Authentication
         Optional<Member> memberInfo = checkAuth(authentication);
-        if(!memberInfo.isPresent()) {
+        if(memberInfo == null) {
             throw new RuntimeException("회원에 등록 되지 않은 외부 사용자입니다.");
         }
 
@@ -97,24 +97,41 @@ public class PostServiceImpl implements PostService {
     }
 
     public List<PostDto.PostList> getPostList(String authentication) {
+        Long memberId;
+
         // Check Authentication
         Optional<Member> memberInfo = checkAuth(authentication);
+        if(memberInfo == null) {
+            memberId = null;
+        } else {
+            memberId = memberInfo.get().getId();
+        }
 
-        List<PostDto.PostList> postLists = postRepository.findByPostList(memberInfo.get().getId());
+        List<Object[]> postLists = postRepository.findByPostList(memberId);
 
-        System.out.print(postLists);
+        List<PostDto.PostList> response = new ArrayList<>();
+        for (Object[] result : postLists) {
+            String title = (String) result[0];
 
-        //Lessor 2
+            String content = (String) result[1];
 
-        /*private String memberName;
-        private String title;
-        private String content;
-        private String checkSelfLike;
-        private int likeCount;*/
+            String user = result[2]+"("+result[3]+")";
 
-        List<PostDto.PostList> a  = new ArrayList<>();
+            Number checkSelfLike = (Number) result[4];
+            boolean selfLike;
+            if(checkSelfLike.intValue() == 1) {
+                selfLike = true;
+            } else {
+                selfLike = false;
+            }
 
-        return a;
+            Number likeCount = (Number) result[5];
+
+            PostDto.PostList dto = new PostDto.PostList(title, content, user, selfLike, likeCount);
+            response.add(dto);
+        }
+
+        return response;
     }
 
     public List<PostHistory> getPostHistoryList(Long postId) {
@@ -139,15 +156,21 @@ public class PostServiceImpl implements PostService {
 
     private Optional<Member> checkAuth(String authentication) {
         String[] authInfo = authentication.split(" ");
-        String accountType = authInfo[0];
-        Long memberId = Long.valueOf(authInfo[1]);
 
-        Optional<Member> memberInfo = memberRepository.findByIdAndAccountType(memberId,
-                Member.AccountType.valueOf(accountType));
-        if(!memberInfo.isPresent()) {
+        try {
+            String accountType = authInfo[0];
+            Long memberId = Long.valueOf(authInfo[1]);
+
+            Optional<Member> memberInfo = memberRepository.findByIdAndAccountType(memberId, accountType);
+            if(!memberInfo.isPresent()) {
+                return null;
+            } else {
+                return memberInfo;
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("authentication에 해당하지 않습니다.");
+        } finally {
             return null;
-        } else {
-            return memberInfo;
         }
     }
 

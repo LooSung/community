@@ -10,6 +10,5 @@ import java.util.Optional;
 
 public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
     Optional<PostLike> findByMemberIdAndPostId(Long memberId, Long postId);
-
     List<PostLike> findAllByMemberIdOrderByLikedAtDesc(Long memberId);
 }
