@@ -19,25 +19,24 @@ public class PostLike {
 	@Column(name = "id", nullable = false)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "post_id")
-	private Post post;
+	@Column(name = "post_id")
+	private Long postId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private Member member;
+	@Column(name = "member_id")
+	private Long memberId;
+
 
 	@Column(name = "liked_at")
 	private LocalDateTime likedAt;
 
 
 	@Builder
-	private PostLike(Long id, Post post, Member member, LocalDateTime likedAt) {
+	private PostLike(Long id, Long postId, Long memberId, LocalDateTime likedAt) {
 		Assert.hasText(String.valueOf(id), "Post Like ID must not be empty");
 
 		this.id = id;
-		this.post = post;
-		this.member = member;
+		this.postId = postId;
+		this.memberId = memberId;
 		this.likedAt = likedAt;
 	}
 }

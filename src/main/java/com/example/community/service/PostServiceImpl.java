@@ -1,5 +1,6 @@
 package com.example.community.service;
 
+import com.example.community.dao.PostDao;
 import com.example.community.dto.PostDto;
 import com.example.community.model.Member;
 import com.example.community.model.Post;
@@ -11,11 +12,9 @@ import com.example.community.repository.PostLikeRepository;
 import com.example.community.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,27 +27,16 @@ public class PostServiceImpl implements PostService {
     private final PostHistoryRepository postHistoryRepository;
     private final PostLikeRepository postLikeRepository;
 
+    private final PostDao postDao;
+
     // 글 작성
-    @Transactional
     public void createPost(PostDto.CreatePost requestDTO, String authentication) {
         // Check Authentication
         Optional<Member> memberInfo = checkAuth(authentication);
-        if(memberInfo.isPresent()) {
+        if(!memberInfo.isPresent()) {
             throw new RuntimeException("회원에 등록 되지 않은 외부 사용자입니다.");
         } else {
-            Post post = Post.builder()
-                    .title(requestDTO.getTitle())
-                    .content(requestDTO.getContent())
-                    .editor(memberInfo.get())
-                    .build();
-            postRepository.save(post);
-
-            PostHistory postHistory = PostHistory.builder()
-                    .post(post)
-                    .editor(memberInfo.get())
-                    .createdAt(LocalDateTime.now())
-                    .build();
-            postHistoryRepository.save(postHistory);
+            postDao.createPost(requestDTO, memberInfo);
         }
     }
 
@@ -56,7 +44,7 @@ public class PostServiceImpl implements PostService {
     public void updatePost(PostDto.UpdatePost requestDTO, String authentication) {
         // Check Authentication
         Optional<Member> memberInfo = checkAuth(authentication);
-        if(memberInfo.isPresent()) {
+        if(!memberInfo.isPresent()) {
             throw new RuntimeException("회원에 등록 되지 않은 외부 사용자입니다.");
         }
 
@@ -65,26 +53,15 @@ public class PostServiceImpl implements PostService {
         if(!postInfo.isPresent()) {
             throw new RuntimeException("해당 게시물이 존재하지 않습니다.");
         } else {
-            Post post = Post.builder()
-                    .title(requestDTO.getTitle())
-                    .content(requestDTO.getContent())
-                    .build();
-            postRepository.save(post);
-
-            PostHistory postHistory = PostHistory.builder()
-                    .post(post)
-                    .editor(memberInfo.get())
-                    .updatedAt(LocalDateTime.now())
-                    .build();
-            postHistoryRepository.save(postHistory);
+            postDao.updatePost(requestDTO, memberInfo);
         }
     }
 
     // 글 삭제
-    public void deletePost(Long userId, Long postId, String authentication) {
+    public void deletePost(Long postId, String authentication) {
         // Check Authentication
         Optional<Member> memberInfo = checkAuth(authentication);
-        if(memberInfo.isPresent()) {
+        if(!memberInfo.isPresent()) {
             throw new RuntimeException("회원에 등록 되지 않은 외부 사용자입니다.");
         }
 
@@ -93,28 +70,14 @@ public class PostServiceImpl implements PostService {
         if(!postInfo.isPresent()) {
             throw new RuntimeException("해당 게시물이 존재하지 않습니다.");
         } else {
-            Post post = postInfo.get();
-            postRepository.delete(post);
-
-            PostHistory postHistory = PostHistory.builder()
-                    .post(post)
-                    .editor(memberInfo.get())
-                    .deletedAt(LocalDateTime.now())
-                    .build();
-            postHistoryRepository.save(postHistory);
-
-            Member member = Member.builder()
-                    .id(memberInfo.get().getId())
-                    .quit(true)
-                    .build();
-            memberRepository.save(member);
+            postDao.deletePost(memberInfo, postInfo);
         }
     }
 
-    public void likePost(Long userId, Long postId, String authentication) {
+    public void likePost(Long postId, String authentication) {
         // Check Authentication
         Optional<Member> memberInfo = checkAuth(authentication);
-        if(memberInfo.isPresent()) {
+        if(!memberInfo.isPresent()) {
             throw new RuntimeException("회원에 등록 되지 않은 외부 사용자입니다.");
         }
 
@@ -124,31 +87,44 @@ public class PostServiceImpl implements PostService {
             throw new RuntimeException("해당 게시물이 존재하지 않습니다.");
         }
 
-        Optional<PostLike> postLikeInfo = postLikeRepository.findByMemberAndPost(memberInfo.get(), postInfo.get());
+        Optional<PostLike> postLikeInfo = postLikeRepository.findByMemberIdAndPostId(memberInfo.get().getId(),
+                                                                                     postInfo.get().getId());
         if (postLikeInfo.isPresent()) {
             throw new RuntimeException("이미 좋아요를 누르셨습니다.");
         } else {
-            PostLike like = PostLike.builder()
-                    .post(postInfo.get())
-                    .member(memberInfo.get())
-                    .likedAt(LocalDateTime.now())
-                    .build();
-            postLikeRepository.save(like);
+            postDao.likePost(memberInfo, postInfo);
         }
     }
 
-    public List<Post> getPostList() {
-        return postRepository.findAll();
+    public List<PostDto.PostList> getPostList(String authentication) {
+        // Check Authentication
+        Optional<Member> memberInfo = checkAuth(authentication);
+
+        List<PostDto.PostList> postLists = postRepository.findByPostList(memberInfo.get().getId());
+
+        System.out.print(postLists);
+
+        //Lessor 2
+
+        /*private String memberName;
+        private String title;
+        private String content;
+        private String checkSelfLike;
+        private int likeCount;*/
+
+        List<PostDto.PostList> a  = new ArrayList<>();
+
+        return a;
     }
 
     public List<PostHistory> getPostHistoryList(Long postId) {
         // Check Post Info
-        Optional<Post> postInfo = checkPost(postId);
-        if(!postInfo.isPresent()) {
+        List<PostHistory> postHistoryList = postHistoryRepository.findAllByPostIdOrderByCreatedAtDesc(postId);
+        if(postHistoryList.isEmpty()) {
             throw new RuntimeException("해당 게시물이 존재하지 않습니다.");
         }
 
-        return postHistoryRepository.findAllByPostOrderByCreatedAtDesc(postInfo.get());
+        return postHistoryList;
     }
 
     public List<PostLike> getPostLikeList(Long userId) {
@@ -158,7 +134,7 @@ public class PostServiceImpl implements PostService {
             throw new RuntimeException("회원에 등록 되지 않은 외부 사용자입니다.");
         }
 
-        return postLikeRepository.findAllByMemberOrderByLikedAtDesc(memberInfo.get());
+        return postLikeRepository.findAllByMemberIdOrderByLikedAtDesc(memberInfo.get().getId());
     }
 
     private Optional<Member> checkAuth(String authentication) {
@@ -166,7 +142,8 @@ public class PostServiceImpl implements PostService {
         String accountType = authInfo[0];
         Long memberId = Long.valueOf(authInfo[1]);
 
-        Optional<Member> memberInfo = memberRepository.findByIdAndAccountType(memberId, accountType);
+        Optional<Member> memberInfo = memberRepository.findByIdAndAccountType(memberId,
+                Member.AccountType.valueOf(accountType));
         if(!memberInfo.isPresent()) {
             return null;
         } else {

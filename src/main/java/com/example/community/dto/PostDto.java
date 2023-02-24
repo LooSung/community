@@ -19,4 +19,13 @@ public class PostDto {
         private String title;
         private String content;
     }
+
+    @Data
+    public static class PostList {
+        private String memberName;
+        private String title;
+        private String content;
+        private String checkSelfLike;
+        private int likeCount;
+    }
 }

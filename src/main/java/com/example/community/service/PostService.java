@@ -10,9 +10,9 @@ import java.util.List;
 public interface PostService {
     void createPost(PostDto.CreatePost requestDTO, String authentication);
     void updatePost(PostDto.UpdatePost requestDTO, String authentication);
-    void deletePost(Long userId, Long postId, String authentication);
-    void likePost(Long userId, Long postId, String authentication);
-    List<Post> getPostList();
+    void deletePost(Long postId, String authentication);
+    void likePost(Long postId, String authentication);
+    List<PostDto.PostList> getPostList(String authentication);
     List<PostHistory> getPostHistoryList(Long postId);
     List<PostLike> getPostLikeList(Long userId);
 }

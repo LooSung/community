@@ -1,6 +1,5 @@
 package com.example.community.model;
 
-import com.example.community.enumDef.PostEnum;
 import lombok.*;
 import org.springframework.util.Assert;
 
@@ -22,9 +21,8 @@ public class Member {
 	@Column(name = "nickname")
 	private String nickname;
 
-	@Enumerated(EnumType.STRING)
 	@Column(name = "account_type")
-	private PostEnum.AccountType accountType;
+	private AccountType accountType;
 
 	@Column(name = "account_id")
 	private String accountId;
@@ -32,8 +30,44 @@ public class Member {
 	@Column(name = "quit")
 	private boolean quit;
 
+	public enum AccountType {
+		Realtor, Lessor, Lessee;
+	}
+
+	public void setAccountType(String accountType) {
+		if (accountType == null) {
+			return;
+		}
+		switch (accountType) {
+			case "Realtor":
+				this.accountType = AccountType.Realtor;
+				break;
+			case "Lessor":
+				this.accountType = AccountType.Lessor;
+				break;
+			case "Lessee":
+				this.accountType = AccountType.Lessee;
+				break;
+			default:
+				throw new IllegalArgumentException("Invalid account type: " + accountType);
+		}
+	}
+
+	public String getAccountTypeKor() {
+		switch (this.accountType) {
+			case Realtor:
+				return "공인 중개사";
+			case Lessor:
+				return "임대인";
+			case Lessee:
+				return "임차인";
+			default:
+				return "";
+		}
+	}
+
 	@Builder
-	private Member(Long id, String password, String nickname, PostEnum.AccountType accountType,
+	private Member(Long id, String password, String nickname, AccountType accountType,
 				   String accountId, boolean quit) {
 		Assert.hasText(String.valueOf(id), "User Id must not be empty");
 

@@ -23,19 +23,7 @@ import java.util.List;
 public class SwaggerConfig {
     @Bean
     public Docket communityApi() {
-        /*ParameterBuilder aParameterBuilder = new ParameterBuilder();
-        aParameterBuilder.name("Authentication") //헤더 이름
-                .description("Input Account ID") //설명
-                .modelRef(new ModelRef("string"))
-                .parameterType("header")
-                .required(false)
-                .build();
-
-        List<Parameter> globalParameters = new ArrayList<>();
-        globalParameters.add(aParameterBuilder.build());*/
-
         return new Docket(DocumentationType.SWAGGER_2)
-                //.globalOperationParameters(globalParameters)
                 .apiInfo(this.apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))

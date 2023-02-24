@@ -3,6 +3,8 @@ package com.example.community.model;
 import lombok.*;
 import org.springframework.util.Assert;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Data
@@ -20,17 +22,16 @@ public class Post {
 	@Column(name = "content")
 	private String content;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
-	private Member editor;
+	@Column(name = "member_id")
+	private Long memberId;
 
 	@Builder
-	private Post(Long id, String title, String content, Member editor) {
+	private Post(Long id, String title, String content, Long memberId) {
 		Assert.hasText(String.valueOf(id), "Post ID must not be empty");
 
 		this.id = id;
 		this.title = title;
 		this.content = content;
-		this.editor = editor;
+		this.memberId = memberId;
 	}
 }

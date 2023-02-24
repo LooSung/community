@@ -1,6 +1,6 @@
 package com.example.community.dto;
 
-import com.example.community.enumDef.PostEnum;
+import com.example.community.model.Member;
 import lombok.Data;
 
 public class MemberDto {
@@ -9,6 +9,6 @@ public class MemberDto {
         private String nickname;
         private String password1;
         private String password2;
-        private PostEnum.AccountType accountType;
+        private Member.AccountType accountType;
     }
 }

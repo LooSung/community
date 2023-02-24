@@ -12,20 +12,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Data
 @Entity
-@Table(name = "post")
+@Table(name = "post_history")
 public class PostHistory {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "post_id")
-	private Post post;
+	@Column(name = "post_id")
+	private Long postId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
-	private Member editor;
+	@Column(name = "member_id")
+	private Long memberId;
 
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
@@ -37,13 +35,13 @@ public class PostHistory {
 	private LocalDateTime deletedAt;
 
 	@Builder
-	private PostHistory(Long id, Post post, Member editor, LocalDateTime createdAt,
+	private PostHistory(Long id, Long postId, Long memberId, LocalDateTime createdAt,
 						LocalDateTime updatedAt, LocalDateTime deletedAt) {
 		Assert.hasText(String.valueOf(id), "Post ID must not be empty");
 
 		this.id = id;
-		this.post = post;
-		this.editor = editor;
+		this.postId = postId;
+		this.memberId = memberId;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 		this.deletedAt = deletedAt;
